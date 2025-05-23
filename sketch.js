@@ -31,6 +31,12 @@ function draw() {
   if (frameCounter % 5 === 0 && predictions.length > 0) {
     const keypoints = predictions[0].scaledMesh;
 
+    // 確認是否有關鍵點資料
+    if (!keypoints || keypoints.length === 0) {
+      console.log("無法獲取關鍵點資料");
+      return;
+    }
+
     // 繪製左眼輪廓
     stroke(0, 255, 0); // 綠色
     strokeWeight(2);
@@ -38,8 +44,12 @@ function draw() {
     beginShape();
     for (let i = 0; i < leftEyeIndices.length; i++) {
       const idx = leftEyeIndices[i];
-      const [x, y] = keypoints[idx];
-      vertex(x, y);
+      if (keypoints[idx]) {
+        const [x, y] = keypoints[idx];
+        vertex(x, y);
+      } else {
+        console.log(`左眼索引 ${idx} 無效`);
+      }
     }
     endShape(CLOSE);
 
@@ -48,8 +58,12 @@ function draw() {
     beginShape();
     for (let i = 0; i < rightEyeIndices.length; i++) {
       const idx = rightEyeIndices[i];
-      const [x, y] = keypoints[idx];
-      vertex(x, y);
+      if (keypoints[idx]) {
+        const [x, y] = keypoints[idx];
+        vertex(x, y);
+      } else {
+        console.log(`右眼索引 ${idx} 無效`);
+      }
     }
     endShape(CLOSE);
   }
