@@ -1,9 +1,10 @@
 let video;
 let facemesh;
 let predictions = [];
-const leftEyeIndices = [33, 160, 158, 133, 153, 144]; // 左眼索引
-const rightEyeIndices = [362, 385, 387, 263, 373, 380]; // 右眼索引
-let frameCounter = 0;
+const indices = [
+  243, 190, 56, 28, 27, 29, 30, 247, 130, 25, 110, 24, 23, 22, 26, 112,
+  133, 173, 157, 158, 159, 160, 161, 246, 33, 7, 163, 144, 145, 153, 154, 155
+];
 
 function setup() {
   createCanvas(640, 480).position(
@@ -27,46 +28,23 @@ function modelReady() {
 function draw() {
   image(video, 0, 0, width, height);
 
-  // 每 5 幀執行一次
-  if (frameCounter % 5 === 0 && predictions.length > 0) {
+  if (predictions.length > 0) {
     const keypoints = predictions[0].scaledMesh;
 
-    // 確認是否有關鍵點資料
-    if (!keypoints || keypoints.length === 0) {
-      console.log("無法獲取關鍵點資料");
-      return;
-    }
-
-    // 繪製左眼輪廓
-    stroke(0, 255, 0); // 綠色
-    strokeWeight(2);
+    // 繪製指定點的連線
+    stroke(255, 0, 0); // 紅色
+    strokeWeight(15); // 線條粗細
     noFill();
     beginShape();
-    for (let i = 0; i < leftEyeIndices.length; i++) {
-      const idx = leftEyeIndices[i];
+    for (let i = 0; i < indices.length; i++) {
+      const idx = indices[i];
       if (keypoints[idx]) {
         const [x, y] = keypoints[idx];
         vertex(x, y);
       } else {
-        console.log(`左眼索引 ${idx} 無效`);
+        console.log(`索引 ${idx} 無效`);
       }
     }
-    endShape(CLOSE);
-
-    // 繪製右眼輪廓
-    stroke(0, 0, 255); // 藍色
-    beginShape();
-    for (let i = 0; i < rightEyeIndices.length; i++) {
-      const idx = rightEyeIndices[i];
-      if (keypoints[idx]) {
-        const [x, y] = keypoints[idx];
-        vertex(x, y);
-      } else {
-        console.log(`右眼索引 ${idx} 無效`);
-      }
-    }
-    endShape(CLOSE);
+    endShape();
   }
-
-  frameCounter++;
 }
