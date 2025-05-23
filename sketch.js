@@ -1,8 +1,8 @@
 let video;
 let facemesh;
 let predictions = [];
-const eyeIndices = [33, 133, 160, 144, 153, 362, 263, 387, 373, 380]; // 眼睛索引
-const noseIndices = [1, 2, 98, 327]; // 鼻子索引（可根據需求調整）
+const leftEyeIndices = [33, 160, 158, 133, 153, 144]; // 左眼索引
+const rightEyeIndices = [362, 385, 387, 263, 373, 380]; // 右眼索引
 let frameCounter = 0;
 
 function setup() {
@@ -31,18 +31,23 @@ function draw() {
   if (frameCounter % 5 === 0 && predictions.length > 0) {
     const keypoints = predictions[0].scaledMesh;
 
-    // 繪製眼睛和鼻子的軌跡
-    stroke(255, 0, 0); // 設定軌跡顏色為紅色
+    // 繪製左眼輪廓
+    stroke(0, 255, 0); // 綠色
     strokeWeight(2);
     noFill();
     beginShape();
-    for (let i = 0; i < eyeIndices.length; i++) {
-      const idx = eyeIndices[i];
+    for (let i = 0; i < leftEyeIndices.length; i++) {
+      const idx = leftEyeIndices[i];
       const [x, y] = keypoints[idx];
       vertex(x, y);
     }
-    for (let i = 0; i < noseIndices.length; i++) {
-      const idx = noseIndices[i];
+    endShape(CLOSE);
+
+    // 繪製右眼輪廓
+    stroke(0, 0, 255); // 藍色
+    beginShape();
+    for (let i = 0; i < rightEyeIndices.length; i++) {
+      const idx = rightEyeIndices[i];
       const [x, y] = keypoints[idx];
       vertex(x, y);
     }
