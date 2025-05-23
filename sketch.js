@@ -3,6 +3,7 @@ let facemesh;
 let predictions = [];
 const eyeIndices = [33, 133, 160, 144, 153, 362, 263, 387, 373, 380]; // 眼睛索引
 const handIndices = [468, 469, 470, 471, 472]; // 手指索引（假設用手掌關鍵點）
+let frameCounter = 0;
 
 function setup() {
   createCanvas(640, 480).position(
@@ -26,7 +27,8 @@ function modelReady() {
 function draw() {
   image(video, 0, 0, width, height);
 
-  if (predictions.length > 0) {
+  // 每 5 幀執行一次
+  if (frameCounter % 5 === 0 && predictions.length > 0) {
     const keypoints = predictions[0].scaledMesh;
 
     // 繪製眼睛軌跡
@@ -54,6 +56,8 @@ function draw() {
       drawLine(keypoints[eyeIndices[0]], keypoints[eyeIndices[eyeIndices.length - 1]]);
     }
   }
+
+  frameCounter++;
 }
 
 function detectGesture(handPoints) {
